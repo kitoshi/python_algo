@@ -10,6 +10,12 @@ You may run all test files with `python -m unittest` (or `python3`, depending on
 
 Note that there will be additional tests for grading which I have not shared with you, although I have not deliberately left any tricks hidden.
 
+## Dates
+
+This assignment was published (late) on the night of October 5th.
+
+It is due at 11:59pm on the night of Friday October 14th, which is one week and two days.
+
 ## Grading
 
 Each problem is worth 1 mark (that is, all 6 problems have equal weight).
