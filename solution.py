@@ -61,7 +61,7 @@ def binarySearch(haystack, needle):
     0
     >>> binarySearch([5, 7, 9], 7)
     1
-    >>> binarySearch([5, 7, 9], 8)
+    >>> binarySearch([5, 7, 9], 9)
     2
     >>> binarySearch([5, 7, 9], 3)
     None
