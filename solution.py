@@ -1,24 +1,25 @@
 ## Problem 1: squashNested
 
 
+from operator import indexOf
+
+
 def squashNested(val):
     """
     Recursively eliminates nested lists, and always returns a list exactly one layer deep, containing all the elements.
-
-    >>> squashNested(2)
-    [2]
-    >>> squashNested([2])
-    [2]
-    >>> squashNested([[2]])
-    [2]
-    >>> squashNested([[[2]]])
-    [2]
-    >>> squashNested([[1, 2], 3])
-    [1, 2, 3]
-    >>> squashNested([[[1, [2]]], 3])
-    [1, 2, 3]
+    solution inspired from
+    https://stackoverflow.com/questions/17485747/how-to-convert-a-nested-list-into-a-one-dimensional-list-in-python
     """
-    return val
+    flat_arr = []
+    try:
+        for item in val:
+            if hasattr(item, "__iter__") and not isinstance(item, str):
+                flat_arr.extend(squashNested(item))
+            else:
+                flat_arr.append(item)
+        return flat_arr
+    except:
+        return [val]
 
 
 ## Problem 2: sumNested
@@ -27,21 +28,16 @@ def squashNested(val):
 def sumNested(val):
     """
     Recursively finds numbers in nested lists, returning the sum of all the nested numbers.
-
-    >>> sumNested(2)
-    2
-    >>> sumNested([2])
-    2
-    >>> sumNested([[2]])
-    2
-    >>> sumNested([[[2]]])
-    2
-    >>> sumNested([[1, 2], 3])
-    6
-    >>> sumNested([[[1, [2]]], 3])
-    6
+    solution inspired by
+    https://stackoverflow.com/questions/45533522/sum-nested-lists-with-recursive-function
     """
-    return val
+    try:
+        sum = 0
+        for item in val:
+            sum += sumNested(item)
+        return sum
+    except:
+        return val
 
 
 ## Problem 3: binarySearch
@@ -66,8 +62,16 @@ def binarySearch(haystack, needle):
     >>> binarySearch([5, 7, 9], 3)
     None
     """
-    return -1
-
+    left = 0
+    right = len(haystack)-1
+    mid = (left + right) // 2
+    if len(haystack) < 1:
+        return None
+    if needle == haystack[mid]:
+        return mid
+    if (needle > haystack[mid]):
+        return binarySearch(haystack[mid+1:], needle)
+    return binarySearch(haystack[:mid], needle)
 
 ## Problem 4: calculator
 
