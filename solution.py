@@ -1,8 +1,6 @@
 ## Problem 1: squashNested
 
 
-from operator import indexOf
-
 
 def squashNested(val):
     """
@@ -52,33 +50,36 @@ def binarySearch(haystack, needle):
     If the needle found, returns the index of the found element.
     If multiple copies of the needle are found, may return any correct index.
     If the needle is not found, return None.
-
-    >>> binarySearch([5, 7, 9], 5)
-    0
-    >>> binarySearch([5, 7, 9], 7)
-    1
-    >>> binarySearch([5, 7, 9], 9)
-    2
-    >>> binarySearch([5, 7, 9], 3)
-    None
+    heavily relied on this thread
+    https://stackoverflow.com/questions/19989910/recursion-binary-search-in-python
     """
-    left = 0
-    right = len(haystack)-1
-    mid = (left + right) // 2
+    mid = len(haystack) // 2
     if len(haystack) < 1:
         return None
-    if needle == haystack[mid]:
+    if len(haystack) == 1:
+        return mid if haystack[mid] == needle else None
+    if haystack[mid] == needle:
         return mid
-    if (needle > haystack[mid]):
-        return binarySearch(haystack[mid+1:], needle)
-    return binarySearch(haystack[:mid], needle)
+    if haystack[mid] < needle:
+        callback_response = binarySearch((haystack[mid:]), needle)
+        return mid + callback_response if callback_response is not None else None    
+    return binarySearch((haystack[:mid]), needle)
 
 ## Problem 4: calculator
 
 
 def calc_helper(str, start):
+    #https://codereview.stackexchange.com/questions/86389/recursive-math-expression-eval
+    start = 0
+    end = len(str)
+    for (i, c) in enumerate(str):
+        if c == '(':
+            start = i
+        if c == ')':
+            end = i + 1
+            break
+    return str[start:end]
     # Here's a hint, this is the parameters for the helper function I wrote to do 90% of the work
-    return -1
 
 
 def do_operator(operator, left, right):
@@ -152,6 +153,10 @@ def makeWeight(target, weights):
     True
 
     """
+    if target == 0:
+        return [0] * len(weights)
+    if not weights:
+        return True
     return [0]
 
 
