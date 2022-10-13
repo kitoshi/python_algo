@@ -5,7 +5,7 @@
 def squashNested(val):
     """
     Recursively eliminates nested lists, and always returns a list exactly one layer deep, containing all the elements.
-    solution inspired from
+    solution relied on
     https://stackoverflow.com/questions/17485747/how-to-convert-a-nested-list-into-a-one-dimensional-list-in-python
     """
     flat_arr = []
@@ -26,7 +26,7 @@ def squashNested(val):
 def sumNested(val):
     """
     Recursively finds numbers in nested lists, returning the sum of all the nested numbers.
-    solution inspired by
+    solution relied on
     https://stackoverflow.com/questions/45533522/sum-nested-lists-with-recursive-function
     """
     try:
@@ -69,17 +69,26 @@ def binarySearch(haystack, needle):
 
 
 def calc_helper(str, start):
-    #https://codereview.stackexchange.com/questions/86389/recursive-math-expression-eval
-    start = 0
-    end = len(str)
-    for (i, c) in enumerate(str):
-        if c == '(':
-            start = i
-        if c == ')':
-            end = i + 1
-            break
-    return str[start:end]
-    # Here's a hint, this is the parameters for the helper function I wrote to do 90% of the work
+    """
+    Recursive helper function for calculator(). uses do_operator() to do calculations. Works with negative numbers and multiple parenthesis.
+    """
+    # NOTE: you may change the code here if you wish.  But this is exactly the code from my solution, so it help.
+    if str[start] == "(":
+        val, found_len = calc_helper(str, start + 1)
+        if str[start + found_len + 1] != ")":
+            raise SyntaxError(f"missing closing parenthesis: {str[start + found_len + 1:]}")
+        return val, found_len + 2
+    else:
+        val = int(str[start])
+        found_len = 1
+        while start + found_len < len(str) and str[start + found_len] in "+-*/":
+            operator = str[start + found_len]
+            right, right_len = calc_helper(str, start + found_len + 1)
+            val = do_operator(operator, val, right)
+            found_len += right_len + 1
+        return val, found_len
+    
+    
 
 
 def do_operator(operator, left, right):
@@ -115,6 +124,7 @@ def calculator(str):
     str = str.replace(" ", "")
     val, found_len = calc_helper(str, 0)
     if found_len == len(str):
+        print(val)
         return val
     else:
         raise SyntaxError(f"leftover data: {str[found_len:]}")
@@ -151,19 +161,28 @@ def makeWeight(target, weights):
     [0, 0, 0]
     >>> makeWeight(7, []) is None                     # no weights? no solution!
     True
-
     """
-    if target == 0:
-        return [0] * len(weights)
-    if not weights:
-        return True
-    return [0]
+    # used co-poilot to help me with this one
 
+    def makeWeight_helper(target, weights, index=0):
+        if target == 0:
+            return [0] * len(weights)
+        if index >= len(weights):
+            return None
+        if target < weights[index]:
+            return makeWeight_helper(target, weights, index + 1)
+        with_weight = makeWeight_helper(target - weights[index], weights, index + 1)
+        if with_weight is not None:
+            with_weight[index] = 1
+            return with_weight
+        return makeWeight_helper(target, weights, index + 1)
+    
+    return makeWeight_helper(target, weights, 0)
 
 ## Problem 6: makeWeightMany
 
 
-def makeWeightMany(target, weights):
+def makeWeightMulti(target, weights):
     """
     Recursively calculates a combination of weights that adds up to the target.
 
@@ -192,4 +211,19 @@ def makeWeightMany(target, weights):
     >>> makeWeightMany(8, [4, 3, 2])      # changing the order of the weights might change the result
     [2, 0, 0]
     """
-    return [0]
+    # used co-poilot to help me with this one
+
+    def makeWeightMulti_helper(target, weights, index):
+        if target == 0:
+            return [0] * len(weights)
+        if index >= len(weights):
+            return None
+        if target < weights[index]:
+            return makeWeightMulti_helper(target, weights, index + 1)
+        with_weight = makeWeightMulti_helper(target - weights[index], weights, index)
+        if with_weight is not None:
+            with_weight[index] += 1
+            return with_weight
+        return makeWeightMulti_helper(target, weights, index + 1)
+    
+    return makeWeightMulti_helper(target, weights, 0)
